@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
+    "@types/debounce": "^1.2.0",
+    "debounce": "^1.2.0",
+    "fetch": "^1.1.0",
     "json-server": "^0.15.1"
   },
   "scripts": {

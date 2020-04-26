@@ -1,23 +1,31 @@
 <!doctype html>
-<html class="no-js" lang="">
-
+<html class='no-js' lang=''>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <title>Albums</title>
-    <meta name="description" content="Albums">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/main.css">
+    <meta name='description' content='Albums'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' href='css/main.css'>
+    <link href='https://fonts.googleapis.com/css2?family=Work+Sans&display=swap' rel='stylesheet'>
   </head>
 
   <body>
 
-    <div id='root'>
-        <ul id='albums'>
-        </ul>
-    </div>
-
-
-    <script src="dist/main.js"></script>
+    <main>
+        <header>
+          <div class='header-container'>
+            <div class='title'>
+              Album list
+            </div>
+            <div class='search-container'>
+              <input id='search' placeholder='Search'/>
+            </div>
+          </div>
+        </header>
+        <div class='content'>
+        </div>
+    </main>
+    <script src='dist/main.js'></script>
   </body>
 
 </html>

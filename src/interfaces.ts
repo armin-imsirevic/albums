@@ -1,4 +1,4 @@
-export interface Album {
+export interface IAlbum {
     id: number;
     title: string;
     price: string;
@@ -6,9 +6,10 @@ export interface Album {
     releaseDate: string;
     artistId: number;
     favorite: boolean;
+    artist?: IArtist;
 }
 
-export interface Artist {
+export interface IArtist {
     id: number;
     title: string;
 }
