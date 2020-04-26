@@ -33,66 +33,74 @@ export const displayPage = (albums: IAlbum[], isHome: boolean) => {
     const content = document.querySelector('div.content');
     content.innerHTML = '';
 
-    albums.forEach((album) => {
-        const section = document.createElement('section');
-        const img = document.createElement('img');
-        img.setAttribute('src', album.imageUrl);
-        img.setAttribute('class', 'album-image');
-        img.addEventListener('click', () => fetchArtistInfo(album.artist.id));
+    const albumSections = albums.map((album) => createAlbumSection(album));
 
-        const titleHolder = document.createElement('div');
-        titleHolder.setAttribute('class', 'title-holder');
-        const albumTitle = document.createElement('div');
-        albumTitle.setAttribute('class', 'album-title');
-        albumTitle.innerText = album.title;
-        const artistTitle = document.createElement('div');
-        artistTitle.setAttribute('class', 'artist-title');
-        artistTitle.innerText = album.artist.title;
-        titleHolder.appendChild(albumTitle);
-        titleHolder.appendChild(artistTitle);
+    for (const albumSection of albumSections) {
+        content.appendChild(albumSection);
+    }
+}
 
-        const releaseDateHolder = document.createElement('div');
-        releaseDateHolder.setAttribute('class', 'album-release-date');
-        const released = document.createElement('span');
-        released.setAttribute('class', 'dsc');
-        released.innerText = 'Released: ';
-        releaseDateHolder.appendChild(released);
-        releaseDateHolder.innerHTML += ' '+new Date(album.releaseDate).getFullYear();
+const createAlbumSection = (album: IAlbum) => {
+    const section = document.createElement('section');
+    section.setAttribute('id', 'a'+album.id);
+    const img = document.createElement('img');
+    img.setAttribute('src', album.imageUrl);
+    img.setAttribute('class', 'album-image');
+    img.addEventListener('click', () => fetchArtistInfo(album.artist.id));
 
-        const price = document.createElement('div');
-        price.setAttribute('class', 'album-price');
-        const priceText = document.createElement('span');
-        priceText.setAttribute('class', 'dsc');
-        priceText.innerText = 'Price: ';
-        price.appendChild(priceText);
-        price.innerHTML += album.price;
+    const titleHolder = document.createElement('div');
+    titleHolder.setAttribute('class', 'title-holder');
+    const albumTitle = document.createElement('div');
+    albumTitle.setAttribute('class', 'album-title');
+    albumTitle.innerText = album.title;
+    const artistTitle = document.createElement('div');
+    artistTitle.setAttribute('class', 'artist-title');
+    artistTitle.innerText = album.artist.title;
+    titleHolder.appendChild(albumTitle);
+    titleHolder.appendChild(artistTitle);
+    titleHolder.addEventListener('click', () => fetchArtistInfo(album.artist.id));
 
-        const favoriteHolder = document.createElement('div');
-        favoriteHolder.setAttribute('class', 'album-favorite');
-        if (album.favorite) {
-            const aLink = document.createElement('a');
-            aLink.setAttribute('class', 'album-favorite-link');
-            aLink.addEventListener('click', () => putAlbumData(album));
-            aLink.innerText = 'Remove favorite';
+    const releaseDateHolder = document.createElement('div');
+    releaseDateHolder.setAttribute('class', 'album-release-date');
+    const released = document.createElement('span');
+    released.setAttribute('class', 'dsc');
+    released.innerText = 'Released: ';
+    releaseDateHolder.appendChild(released);
+    releaseDateHolder.innerHTML += ' '+new Date(album.releaseDate).getFullYear();
 
-            favoriteHolder.appendChild(aLink);
-        } else {
-            const button = document.createElement('button');
-            button.setAttribute('class', 'album-favorite-button');
-            button.addEventListener('click', () => putAlbumData(album));
-            button.innerText = 'MARK AS FAVORITE';
+    const price = document.createElement('div');
+    price.setAttribute('class', 'album-price');
+    const priceText = document.createElement('span');
+    priceText.setAttribute('class', 'dsc');
+    priceText.innerText = 'Price: ';
+    price.appendChild(priceText);
+    price.innerHTML += album.price;
 
-            favoriteHolder.appendChild(button);
-        }
+    const favoriteHolder = document.createElement('div');
+    favoriteHolder.setAttribute('class', 'album-favorite');
+    if (album.favorite) {
+        const aLink = document.createElement('a');
+        aLink.setAttribute('class', 'album-favorite-link');
+        aLink.addEventListener('click', () => putAlbumData(album));
+        aLink.innerText = 'Remove favorite';
 
-        section.appendChild(img);
-        section.appendChild(titleHolder);
-        section.appendChild(releaseDateHolder);
-        section.appendChild(price);
-        section.appendChild(favoriteHolder);
+        favoriteHolder.appendChild(aLink);
+    } else {
+        const button = document.createElement('button');
+        button.setAttribute('class', 'album-favorite-button');
+        button.addEventListener('click', () => putAlbumData(album));
+        button.innerText = 'MARK AS FAVORITE';
 
-        content.appendChild(section);
-    });
+        favoriteHolder.appendChild(button);
+    }
+
+    section.appendChild(img);
+    section.appendChild(titleHolder);
+    section.appendChild(releaseDateHolder);
+    section.appendChild(price);
+    section.appendChild(favoriteHolder);
+
+    return section;
 }
 
 const unique = (value: any, index: number, self: any) => {
@@ -125,12 +133,6 @@ export const fetchArtistInfo = async (artistID: string | number): Promise<void> 
     displayPage(albumFullData, false);
 }
 
-export const fetchArtist = (id: number): void => {
-    fetch(`/artists/${id}`)
-        .then((res: Response) => res.json())
-        .then((data: IArtist) => data);
-}
-
 export const fetchAlbumsByQuery = async (query: string): Promise<void> => {
     const urlParams = new URLSearchParams(window.location.search);
     const limit = urlParams.has('limit') ? urlParams.get('limit') : 10;
@@ -147,15 +149,17 @@ export const fetchAlbumsByQuery = async (query: string): Promise<void> => {
 }
 
 export const putAlbumData = async (album: IAlbum): Promise<void> => {
+    const albumData = {...album, favorite: !album.favorite} as IAlbum;
     await fetch(
         `/albums/${album.id}`,
         {
             headers: { 'Content-Type': 'application/json' },
             method: 'put',
-            body: JSON.stringify({...album, favorite: !album.favorite} as IAlbum),
+            body: JSON.stringify(albumData),
         },
     )
-    loadPage();
+    const section = createAlbumSection(albumData);
+    document.querySelector(`section#a${albumData.id}`).replaceWith(section);
 }
 
 const loadPage = () => {
