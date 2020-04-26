@@ -351,3 +351,14 @@ span.dsc {
         font-size: 13px;
     }
 }
+
+
+@media (max-width: 425px) {
+    .title-holder {
+        width: 150px;
+    }
+
+    .album-title {
+        font-size: 12px;
+    }
+}
