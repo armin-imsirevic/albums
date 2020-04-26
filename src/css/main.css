@@ -1,12 +1,13 @@
 * {
     box-sizing: content-box;
-    margin: 0px;
-    scroll-behavior: smooth;
+    margin: 0;
     font-family: 'Work Sans', sans-serif;
 }
 
-html {
-    width: auto;
+html,body{
+    width:100%;
+    margin:0;
+    padding:0;
 }
 
 main, body {
@@ -42,7 +43,8 @@ header {
 
 .search-container {
     width: 40%;
-    margin: auto
+    margin: auto;
+    display: flex;
 }
 
 #search {
@@ -60,7 +62,8 @@ header {
     background-image: url(../img/shape.png);
     background-repeat: no-repeat;
     background-position: right;
-    background-position-x: 380px;
+    background-position-x: 95%;
+    margin: auto 0 auto auto;
 }
 
 #search:focus {
@@ -87,24 +90,25 @@ section {
     height: 54px;
     border-radius: 4px;
     margin: auto 25px auto 20px;
+    cursor: pointer;
 }
 
 .title-holder {
     display: flex;
-    width: 420px;
+    width: 410px;
     flex-direction: column;
     margin: auto auto auto 0;
 }
 
 .album-title {
-    height: 24px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 500;
     font-stretch: normal;
     font-style: normal;
     line-height: 1.33;
     letter-spacing: -0.66px;
     color: #363636;
+    cursor: pointer;
 }
 
 .artist-title {
@@ -116,10 +120,12 @@ section {
     line-height: normal;
     letter-spacing: -0.44px;
     color: #a0a0a0;
+    cursor: pointer;
 }
 
 .album-price {
-    margin: auto;
+    margin: auto auto auto 25px;
+    width: 100px;
     height: 16px;
     font-size: 14px;
     font-weight: normal;
@@ -132,6 +138,7 @@ section {
 
 .album-release-date {
     margin: auto auto auto 0;
+    width: 100px;
     height: 16px;
     font-size: 14px;
     font-weight: normal;
@@ -142,20 +149,28 @@ section {
     color: #000000;
 }
 
-.album-remove-link {
+.album-favorite-link {
     height: 11px;
     font-family: WorkSans;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: normal;
     font-stretch: normal;
     font-style: normal;
     line-height: normal;
     letter-spacing: normal;
     color: #13d6ea;
+    margin: auto;
+    cursor: pointer;
+}
+
+.album-favorite-link:hover {
+    text-decoration: underline;
 }
 
 .album-favorite {
-    margin: auto;
+    margin: auto 20px auto 25px;
+    width: 150px;
+    display: flex;
 }
 
 .album-favorite-button {
@@ -171,9 +186,13 @@ section {
     color: #FFFFFF;
     padding-left: 14px;
     padding-right: 14px;
+    margin: auto;
+    cursor: pointer;
+    outline: 0;
 }
 
-.released {
+span.dsc {
+    width: 70px;
     height: 16px;
     font-size: 14px;
     font-weight: normal;
@@ -182,4 +201,153 @@ section {
     line-height: normal;
     letter-spacing: -0.51px;
     color: #a0a0a0;
-  }
+}
+
+.back-link {
+    margin: auto 0 auto auto;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+@media (max-width: 1400px){
+    /* .title-holder {
+        width: 320px;
+    }
+    .album-title {
+        font-size: 14px;
+    } */
+    .header-container {
+        margin: 0 10% 0 10%;
+    }
+    .content {
+        margin: 50px 10% 0 10%;
+    }
+}
+
+@media (max-width: 1148px){
+    /* .title-holder {
+        width: 280px;
+    }
+    .album-title {
+        font-size: 12px;
+    } */
+    .header-container {
+        margin: 0 5% 0 5%;
+    }
+    .content {
+        margin: 50px 5% 0 5%;
+    }
+    .album-title {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 1100px){
+    .title-holder {
+        width: 350px;
+    }
+    /* 
+    .album-title {
+        font-size: 12px;
+    } */
+    .header-container {
+        margin: 0 2% 0 2%;
+    }
+    .content {
+        margin: 50px 2% 0 2%;
+    }
+
+    .album-title {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 900px){
+
+    .album-image {
+        width: 170px;
+        height: 170px;
+        flex: 0 0;
+    }
+    section {
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+    section {
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: end;
+    }
+
+    section > img {
+        flex: 1 1 170px;
+    }
+
+    .album-price, .title-holder, .album-release-date {
+        margin: 20px auto auto 0;
+    }
+
+    .album-favorite {
+        width: 100%;
+        margin: auto;
+    }
+    .album-favorite-button, .album-favorite-link {
+        margin: 0 0 10px 0;
+    }
+    .album-favorite-link {
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
+    .album-title {
+        font-size: 15px;
+    }
+
+    .header-container {
+        margin: 0 10% 0 10%;
+    }
+
+    .content {
+        margin: 50px 10% 0 10%;
+    }
+
+}
+
+@media (max-width: 767px) {
+    .header-container {
+        margin: 0 2% 0 2%;
+        flex-direction: column;
+        text-align: center;
+    }
+    .search-container {
+        margin: auto;
+        width: 90%;
+    }
+    .back-link {
+        width: 90%;
+        margin: auto;
+        text-align: center;
+    }
+    #search {
+        margin: auto;
+    }
+    .content {
+        margin: 50px 2% 0 2%;
+    }
+    .title-holder {
+        width: 300px;
+    }
+}
+
+@media (max-width: 535px) {
+    .title-holder {
+        width: 200px;
+    }
+
+    .album-title {
+        font-size: 13px;
+    }
+}
