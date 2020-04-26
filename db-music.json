@@ -44,13 +44,13 @@
       "favorite": false
     },
     {
-      "id": 1,
       "title": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
       "price": "$9.99",
       "imageUrl": "https://is4-ssl.mzstatic.com/image/thumb/Music124/v4/a7/31/24/a731244c-e065-2f44-63a2-d15b6b27fefa/00602577427657.rgb.jpg/170x170bb.png",
       "releaseDate": "2019-03-29T00:00:00-07:00",
       "artistId": 1,
-      "favorite": false
+      "favorite": false,
+      "id": 1
     },
     {
       "id": 2,

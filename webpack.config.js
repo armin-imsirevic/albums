@@ -1,10 +1,11 @@
-const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+
 module.exports = {
     devtool: 'source-map',
     entry: './src/main.ts',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'public'),
         publicPath: '/',
         filename: 'main.js',
     },
@@ -37,11 +38,6 @@ module.exports = {
                     'css-loader'
                 ]
             },
-            // {
-            //     enforce: 'pre',
-            //     test: /\.js$/,
-            //     loader: 'source-map-loader'
-            // },
             {
                 test: /\.(png|jpe?g|gif)$/i,
                 use: [

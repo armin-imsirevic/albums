@@ -68,10 +68,10 @@ const unique = (value: any, index: number, self: any) => {
 export const fetchAlbumInfo = async (): Promise<void> => {
     const urlParams = new URLSearchParams(window.location.search);
     const limit = urlParams.has('limit') ? urlParams.get('limit') : 10;
-    const albumsResponse = await fetch(`http://localhost:3004/albums/?_limit=${limit}`);
+    const albumsResponse = await fetch(`/albums/?_limit=${limit}`);
     const albumsData: IAlbum[] = await albumsResponse.json();
     const artistsQuery = albumsData.map((a) => a.artistId).filter(unique).join('&id=');
-    const artistsResponse = await fetch(`http://localhost:3004/artists/?id=${artistsQuery}`);
+    const artistsResponse = await fetch(`/artists/?id=${artistsQuery}`);
     const artistsData: IArtist[] = await artistsResponse.json();
     const artistFullData = albumsData.map((album) => {
         const artist = artistsData.find((artist) => artist.id === album.artistId);
@@ -81,7 +81,7 @@ export const fetchAlbumInfo = async (): Promise<void> => {
 }
 
 export const fetchArtist = (id: number): void => {
-    fetch(`http://localhost:3004/artists/${id}`)
+    fetch(`/artists/${id}`)
         .then((res: Response) => res.json())
         .then((data: IArtist) => data);
 }
@@ -89,10 +89,10 @@ export const fetchArtist = (id: number): void => {
 export const fetchAlbumsByQuery = async (query: string): Promise<void> => {
     const urlParams = new URLSearchParams(window.location.search);
     const limit = urlParams.has('limit') ? urlParams.get('limit') : 10;
-    const albumsResponse = await fetch(`http://localhost:3004/albums/?_limit=${limit}&q=${query}`);
+    const albumsResponse = await fetch(`/albums/?_limit=${limit}&q=${query}`);
     const albumsData: IAlbum[] = await albumsResponse.json();
     const artistsQuery = albumsData.map((a) => a.artistId).filter(unique).join('&id=');
-    const artistsResponse = await fetch(`http://localhost:3004/artists/?id=${artistsQuery}`);
+    const artistsResponse = await fetch(`/artists/?id=${artistsQuery}`);
     const artistsData: IArtist[] = await artistsResponse.json();
     const artistFullData = albumsData.map((album) => {
         const artist = artistsData.find((artist) => artist.id === album.artistId);
@@ -102,7 +102,7 @@ export const fetchAlbumsByQuery = async (query: string): Promise<void> => {
 }
 
 export const changeFavorite = (id: number, favorite: boolean): void => {
-    fetch(`http://localhost:3004/albums/${id}`, {method: 'put', body: JSON.stringify({favorite: favorite})})
+    fetch(`/albums/${id}`, {method: 'put', body: JSON.stringify({favorite: favorite})})
         .then((res: Response) => res.json())
         .then((data) => console.log(data));
 }
@@ -110,7 +110,7 @@ export const changeFavorite = (id: number, favorite: boolean): void => {
 export const putAlbumData = (album: IAlbum): void => {
     console.log({...album, favorite: !album.favorite});
     fetch(
-        `http://localhost:3004/albums/${album.id}`,
+        `/albums/${album.id}`,
         {
             headers: { 'Content-Type': 'application/json' },
             method: 'put',
