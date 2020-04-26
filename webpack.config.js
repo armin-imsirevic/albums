@@ -1,17 +1,19 @@
 const path = require('path');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
-    devtool: "source-map",
+    devtool: 'source-map',
     entry: './src/main.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: './main.js'
+        publicPath: '/',
+        filename: 'main.js',
     },
     resolve: {
-        extensions: [".ts", ".js"]
+        extensions: ['.ts', '.js']
     },
     devServer: {
-        writeToDisk: true
+        contentBase: './src',
+        historyApiFallback: true
     },
     module: {
         rules: [
@@ -20,15 +22,35 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: "ts-loader"
+                        loader: 'ts-loader'
                     }
                 ]
             },
             {
-                enforce: "pre",
-                test: /\.js$/,
-                loader: "source-map-loader"
-            }
+                test: /\.html$/i,
+                loader: 'html-loader',
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
+            // {
+            //     enforce: 'pre',
+            //     test: /\.js$/,
+            //     loader: 'source-map-loader'
+            // },
+            {
+                test: /\.(png|jpe?g|gif)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                    },
+                ],
+            },
         ]
     },
+    plugins: [new HtmlWebpackPlugin({template: './src/index.html'})],
 };

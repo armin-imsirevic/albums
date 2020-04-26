@@ -1,9 +1,13 @@
+import './css/main.css';
+
 import { debounce } from 'debounce';
 
 import { IAlbum, IArtist } from './interfaces';
 
 export const displayAlbums = (albums: IAlbum[]) => {
     const content = document.querySelector('div.content');
+    content.innerHTML = '';
+
     albums.forEach((album) => {
         const section = document.createElement('section');
         const img = document.createElement('img');
@@ -52,6 +56,7 @@ export const displayAlbums = (albums: IAlbum[]) => {
         section.appendChild(releaseDateHolder);
         section.appendChild(price);
         section.appendChild(favoriteHolder);
+
         content.appendChild(section);
     });
 }
@@ -60,7 +65,9 @@ const unique = (value: any, index: number, self: any) => {
     return self.indexOf(value) === index
 }
 
-export const fetchAlbumInfo = async (limit = 20): Promise<void> => {
+export const fetchAlbumInfo = async (): Promise<void> => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const limit = urlParams.has('limit') ? urlParams.get('limit') : 10;
     const albumsResponse = await fetch(`http://localhost:3004/albums/?_limit=${limit}`);
     const albumsData: IAlbum[] = await albumsResponse.json();
     const artistsQuery = albumsData.map((a) => a.artistId).filter(unique).join('&id=');
@@ -69,7 +76,7 @@ export const fetchAlbumInfo = async (limit = 20): Promise<void> => {
     const artistFullData = albumsData.map((album) => {
         const artist = artistsData.find((artist) => artist.id === album.artistId);
         return {...album, artist} as IAlbum;
-    })
+    });
     displayAlbums(artistFullData);
 }
 
@@ -79,10 +86,19 @@ export const fetchArtist = (id: number): void => {
         .then((data: IArtist) => data);
 }
 
-export const fetchAlbumsByQuery = (query: string): void => {
-    fetch(`http://localhost:3004/albums?q=${query}`)
-        .then((res: Response) => res.json())
-        .then((data: IAlbum[]) => console.log(data));
+export const fetchAlbumsByQuery = async (query: string): Promise<void> => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const limit = urlParams.has('limit') ? urlParams.get('limit') : 10;
+    const albumsResponse = await fetch(`http://localhost:3004/albums/?_limit=${limit}&q=${query}`);
+    const albumsData: IAlbum[] = await albumsResponse.json();
+    const artistsQuery = albumsData.map((a) => a.artistId).filter(unique).join('&id=');
+    const artistsResponse = await fetch(`http://localhost:3004/artists/?id=${artistsQuery}`);
+    const artistsData: IArtist[] = await artistsResponse.json();
+    const artistFullData = albumsData.map((album) => {
+        const artist = artistsData.find((artist) => artist.id === album.artistId);
+        return {...album, artist} as IAlbum;
+    });
+    displayAlbums(artistFullData);
 }
 
 export const changeFavorite = (id: number, favorite: boolean): void => {
@@ -104,8 +120,13 @@ export const putAlbumData = (album: IAlbum): void => {
      .then((data) => console.log(data));
 }
 
-const searchInput = document.getElementById('search');
+window.addEventListener('load', () => {
+    if(document.querySelector('main#albums')) {
+        const searchInput = document.getElementById('search');
+        searchInput.addEventListener('input', debounce((e: any) => fetchAlbumsByQuery(e.target.value), 500));
+        fetchAlbumInfo();
+    }
+    // } else {
 
-searchInput.addEventListener('input', debounce((e: any) => fetchAlbumsByQuery(e.target.value), 500));
-
-fetchAlbumInfo();
+    // }
+});
