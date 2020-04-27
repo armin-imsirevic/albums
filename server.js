@@ -7,7 +7,7 @@ const path = require('path');
 
 const port = process.env.PORT || 3004;
 
-server.use('/artist/:id', function (req, res) {
+server.use(/^(?!((\/artists|\/albums))).+/g, function (req, res) {
     res.sendFile(path.resolve(__dirname, 'public/index.html'));
 });
 
@@ -15,3 +15,5 @@ server.use(middlewares);
 server.use(router);
 
 server.listen(port);
+
+console.log(`JSON Server is up on port: ${3004}`);

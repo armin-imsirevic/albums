@@ -41,7 +41,7 @@
       "imageUrl": "https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/20/6f/b5/206fb560-6fd5-15f9-0b68-88d309ffc5a6/19UMGIM53909.rgb.jpg/170x170bb.png",
       "releaseDate": "2019-08-23T00:00:00-07:00",
       "artistId": 0,
-      "favorite": true
+      "favorite": false
     },
     {
       "title": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
@@ -104,7 +104,7 @@
       "imageUrl": "https://is2-ssl.mzstatic.com/image/thumb/Music118/v4/2e/0d/94/2e0d944c-eb37-e725-70a0-1b11ea3c1843/00602567328056.rgb.jpg/170x170bb.png",
       "releaseDate": "2017-08-11T00:00:00-07:00",
       "artistId": 1,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": 8,
