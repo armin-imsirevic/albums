@@ -19,6 +19,9 @@ export interface IOptions {
     query?: string;
 }
 
-export interface IQueryOptions extends IOptions {
+export interface IPagination {
     limit: string;
+    page: string;
 }
+
+export type IQueryOptions = IOptions & IPagination;

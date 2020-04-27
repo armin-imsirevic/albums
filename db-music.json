@@ -49,7 +49,7 @@
       "imageUrl": "https://is4-ssl.mzstatic.com/image/thumb/Music124/v4/a7/31/24/a731244c-e065-2f44-63a2-d15b6b27fefa/00602577427657.rgb.jpg/170x170bb.png",
       "releaseDate": "2019-03-29T00:00:00-07:00",
       "artistId": 1,
-      "favorite": true,
+      "favorite": false,
       "id": 1
     },
     {
@@ -59,11 +59,7 @@
       "imageUrl": "https://is5-ssl.mzstatic.com/image/thumb/Music/02/16/dd/mzi.modzlreh.jpg/170x170bb.png",
       "releaseDate": "1976-11-01T00:00:00-07:00",
       "artistId": 2,
-      "favorite": true,
-      "artist": {
-        "id": 2,
-        "title": "James Taylor"
-      }
+      "favorite": false
     },
     {
       "id": 3,
@@ -72,11 +68,7 @@
       "imageUrl": "https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/56/33/14/56331415-1036-71f5-a4ec-ec4e1065f69b/19UMGIM88564.rgb.jpg/170x170bb.png",
       "releaseDate": "2019-11-15T00:00:00-07:00",
       "artistId": 3,
-      "favorite": true,
-      "artist": {
-        "id": 3,
-        "title": "Various Artists"
-      }
+      "favorite": false
     },
     {
       "id": 4,
@@ -146,11 +138,7 @@
       "imageUrl": "https://is3-ssl.mzstatic.com/image/thumb/Music118/v4/76/b6/e4/76b6e4e2-5d85-1d5c-d524-c3b1f9cb8f8f/093624906407.jpg/170x170bb.png",
       "releaseDate": "2018-06-22T00:00:00-07:00",
       "artistId": 9,
-      "favorite": true,
-      "artist": {
-        "id": 9,
-        "title": "Dan + Shay"
-      }
+      "favorite": true
     }
   ]
 }

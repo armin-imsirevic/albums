@@ -1,18 +1,8 @@
-import { IAlbum, IArtist, IQueryOptions, IOptions } from './interfaces';
-import { unique } from './helpers';
+import { IAlbum, IArtist, IQueryOptions } from './interfaces';
+import { unique, constructQueryParamsString } from './helpers';
 
 const requestAlbums = (options: IQueryOptions): Promise<Response> => {
-    const {
-        limit,
-        query,
-        artistId
-    } = options;
-
-    const limitParameter = limit ? '_limit=' + limit : '';
-    const queryParameter = query ? 'q=' + query : '';
-    const artistIdParameter = artistId ? 'artistId=' + artistId : '';
-    const queryParameters = [limitParameter, queryParameter, artistIdParameter].filter((p) => p != null).join('&');
-
+    const queryParameters = constructQueryParamsString(options);
     return fetch(`/albums${queryParameters ? '/?' + queryParameters : ''}`);
 }
 
@@ -27,11 +17,8 @@ const requestUpdateAlbum = (album: IAlbum): Promise<Response> => fetch(
     },
 )
 
-export const fetchAlbumInfo = async (options?: IOptions): Promise<IAlbum[]> => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const limit = urlParams.has('limit') ? urlParams.get('limit') : '10';
-
-    const albumsResponse = await requestAlbums({...options, limit});
+export const fetchAlbumInfo = async (options?: IQueryOptions): Promise<IAlbum[]> => {
+    const albumsResponse = await requestAlbums(options);
     const albumsData: IAlbum[] = await albumsResponse.json();
     const artistsQuery = albumsData.map((a) => a.artistId).filter(unique).join('&id=');
     const artistsResponse = await requestArtists(artistsQuery);

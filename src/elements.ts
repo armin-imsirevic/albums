@@ -2,6 +2,7 @@ import { IAlbum } from './interfaces';
 import { displayAlbums } from './main';
 import { debounce } from 'debounce';
 import { updateAlbum } from './api';
+import { setPaginationToDefault } from './helpers';
 
 const createAlbumImgEl = (album: IAlbum): HTMLImageElement => {
     const img = document.createElement('img');
@@ -91,7 +92,6 @@ const updateAlbumSection = async (album: IAlbum): Promise<void> => {
 
 export const createNoResultsEl = (query: string): HTMLDivElement => {
     const noEl = document.createElement('div');
-    noEl.setAttribute('class', 'no-search');
     noEl.innerText = `No search results for '${query}'!`
 
     return noEl;
@@ -100,7 +100,6 @@ export const createNoResultsEl = (query: string): HTMLDivElement => {
 
 export const createInvalidArtistIDEl = (artistId: string): HTMLDivElement => {
     const el = document.createElement('div');
-    el.setAttribute('class', 'no-search');
     el.innerText = `Artist with id '${artistId}' doesn't exist!`
 
     return el;
@@ -136,10 +135,17 @@ export const createSearchInputEl = (): HTMLInputElement => {
 export const createBackLinkEl = (): HTMLAnchorElement => {
     const backLink = document.createElement('a');
     backLink.setAttribute('class', 'back-link')
-    backLink.innerText = '< Back';
+    backLink.innerText = '< ';
     backLink.addEventListener('click', () => {
         window.history.pushState('', '', '/');
+        setPaginationToDefault();
         displayAlbums();
     });
     return backLink;
+}
+
+export const createPageTitleEl = (pageTitle: string): HTMLDivElement => {
+    const pageTitleEl = document.createElement('div');
+    pageTitleEl.innerText = pageTitle;
+    return pageTitleEl;
 }

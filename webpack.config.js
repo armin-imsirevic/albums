@@ -12,10 +12,6 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js']
     },
-    devServer: {
-        contentBase: './src',
-        historyApiFallback: true
-    },
     module: {
         rules: [
             {
@@ -48,5 +44,8 @@ module.exports = {
             },
         ]
     },
-    plugins: [new HtmlWebpackPlugin({template: './src/index.html'})],
+    plugins: [new HtmlWebpackPlugin({
+        template: './src/index.html',
+        favicon: './src/img/favicon.png'
+    })],
 };
