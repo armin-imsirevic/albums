@@ -1,5 +1,5 @@
 import { IAlbum, IArtist } from './interfaces';
-import { artistURLRegex, unique} from './helpers';
+import { unique} from './helpers';
 
 export const requestUpdateAlbum = (album: IAlbum) => fetch(
     `/albums/${album.id}`,
@@ -25,10 +25,10 @@ export const fetchAlbumInfo = async (): Promise<IAlbum[]> => {
     return albumFullData;
 }
 
-export const fetchArtistInfo = async (artistID: string | number): Promise<IAlbum[]> => {
-    const artistsResponse = await fetch(`/artists/?id=${artistID}`);
+export const fetchArtistInfo = async (artistId: string | number): Promise<IAlbum[]> => {
+    const artistsResponse = await fetch(`/artists/?id=${artistId}`);
     const artistData: IArtist[] = await artistsResponse.json();
-    const albumsResponse = await fetch(`/albums/?artistId=${artistID}`);
+    const albumsResponse = await fetch(`/albums/?artistId=${artistId}`);
     const albumsData: IAlbum[] = await albumsResponse.json();
     const albumFullData = albumsData.map((album) => ({...album, artist: artistData[0]} as IAlbum));
     return albumFullData;

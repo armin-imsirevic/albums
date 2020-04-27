@@ -1,11 +1,13 @@
 import './css/main.css';
 
-import { IAlbum, IArtist } from './interfaces';
+import { IAlbum, IDisplayOptions } from './interfaces';
 import { createAlbumSection, createSearchInputEl, createBackLinkEl } from './elements';
 import { requestUpdateAlbum, fetchAlbumInfo, fetchArtistInfo, fetchAlbumsByQuery } from './api';
-import { unique, artistURLRegex } from './helpers';
+import { artistURLRegex } from './helpers';
 
-export const displayPage = async (artistId?: string, query?: string) => {
+export const displayPage = async (options?: IDisplayOptions) => {
+
+    const { artistId, query } = options || {};
     const albums = artistId ?
         await fetchArtistInfo(artistId)
         : query ?
@@ -44,7 +46,7 @@ export const displayPage = async (artistId?: string, query?: string) => {
 
 
 export const updateAlbum = async (album: IAlbum): Promise<void> => {
-    const albumData = {...album, favorite: !album.favorite} as IAlbum;
+    const albumData = {...album, favorite: !album.favorite, artist: undefined} as IAlbum;
     await requestUpdateAlbum(albumData);
     const newSection = createAlbumSection(albumData);
     document.querySelector(`section#a${albumData.id}`).replaceWith(newSection);
@@ -53,8 +55,8 @@ export const updateAlbum = async (album: IAlbum): Promise<void> => {
 const loadPage = () => {
     const pathName = window.location.pathname;
     if(artistURLRegex.test(pathName)) {
-        const artistID = pathName.split('/')[2];
-        displayPage(artistID).catch((e) => console.log(e));
+        const artistId = pathName.split('/')[2];
+        displayPage({artistId}).catch((e) => console.log(e));
     } else {
         displayPage().catch((e) => console.log(e));
     }

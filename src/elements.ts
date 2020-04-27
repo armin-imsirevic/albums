@@ -6,7 +6,7 @@ const createAlbumImgEl = (album: IAlbum): HTMLImageElement => {
     const img = document.createElement('img');
     img.setAttribute('src', album.imageUrl);
     img.setAttribute('class', 'album-image');
-    img.addEventListener('click', () => displayPage(album.artist.id.toString()));
+    img.addEventListener('click', () => displayPage({artistId: album.artist.id.toString()}));
     return img;
 }
 
@@ -21,7 +21,7 @@ const createSectionTitleEl = (album: IAlbum): HTMLDivElement => {
     artistTitle.innerText = album.artist.title;
     titleHolder.appendChild(albumTitle);
     titleHolder.appendChild(artistTitle);
-    titleHolder.addEventListener('click', () => displayPage(album.artist.id.toString()));
+    titleHolder.addEventListener('click', () => displayPage({artistId: album.artist.id.toString()}));
     return titleHolder;
 }
 
@@ -105,7 +105,7 @@ export const createSearchInputEl = (): HTMLInputElement => {
     const searchInput = document.createElement('input');
     searchInput.setAttribute('id', 'search');
     searchInput.setAttribute('placeholder', 'Search');
-    searchInput.addEventListener('input', debounce((e: any) => displayPage(undefined, e.target.value), 500));
+    searchInput.addEventListener('input', debounce((e: any) => displayPage({query: e.target.value}), 500));
     return searchInput;
 }
 

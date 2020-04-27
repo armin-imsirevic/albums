@@ -13,3 +13,8 @@ export interface IArtist {
     id: number;
     title: string;
 }
+
+export interface IDisplayOptions {
+    artistId?: string;
+    query?: string;
+}
