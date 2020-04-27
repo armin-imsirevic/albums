@@ -237,7 +237,7 @@ span.dsc {
     background: rgba(0, 0, 0, 0.5);
     height: 100%;
     z-index: 1;
-    position: absolute;
+    position: fixed;
     width: 100%;
     background-image: url(../img/loading.gif);
     background-repeat: no-repeat;
@@ -320,9 +320,6 @@ span.dsc {
         width: 300px;
     }
 
-    .back-link {
-        margin-left: -25px;
-    }
 }
 
 @media (max-width: 768px) {
@@ -357,6 +354,9 @@ span.dsc {
         margin: auto;
         padding-top: 10px;
         padding-bottom: 5px;
+    }
+    .back-link {
+        margin-left: -25px;
     }
 }
 
