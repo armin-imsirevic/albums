@@ -1,12 +1,23 @@
 import './css/main.css';
 
-import { IOptions } from './interfaces';
-import { createAlbumSectionEl, createSearchInputEl, createBackLinkEl, createNoResultsEl, createInvalidArtistIDEl, createPageTitleEl } from './elements';
+import {
+    createAlbumSectionEl,
+    createSearchInputEl,
+    createBackLinkEl,
+    createNoResultsEl,
+    createInvalidArtistIDEl,
+    createPageTitleEl,
+} from './elements';
+import {
+    artistURLRegex,
+    getPagination,
+    showLoaderOnFunctionWait
+} from './helpers';
 import { fetchAlbumInfo } from './api';
-import { artistURLRegex, getPagination } from './helpers';
+import { IOptions } from './interfaces';
 
 export const displayAlbums = async (options?: IOptions) => {
-
+    const isHome = window.history.state.home;
     const { limit, page } = getPagination();
     const { artistId, query } = options || {};
 
@@ -18,26 +29,36 @@ export const displayAlbums = async (options?: IOptions) => {
     const backLink = createBackLinkEl();
 
     // Sets up title header and search input
-    if (!artistId && !document.querySelector('input#search')) {
-        searchContainer.innerHTML = '';
+    if (isHome) {
         titleContainer.innerHTML = '';
 
-        paginationEl.classList.remove('hide');
-        const searchInputEl = createSearchInputEl();
-        searchContainer.appendChild(searchInputEl);
-        titleContainer.innerHTML = 'Album list';
-        if (artistURLRegex.test(window.location.pathname)) {
-            window.history.pushState('', 'Album list', '/');
+        const existingSearchEl  = document.querySelector('input#search')
+        if (!existingSearchEl) {
+            searchContainer.innerHTML = '';
+            const searchInputEl = createSearchInputEl();
+            searchContainer.appendChild(searchInputEl);
         }
-    } else if (artistId && albums.length && !document.querySelector('a.back-link')) {
-        paginationEl.classList.add('hide');
-        searchContainer.innerHTML = '';
-        titleContainer.innerHTML = '';
+        titleContainer.innerHTML = 'Album list';
 
-        const titleEl = createPageTitleEl(albums[0].artist.title);
-        titleContainer.appendChild(backLink);
-        titleContainer.appendChild(titleEl);
-        window.history.pushState('', artistId, `/artist/${artistId}`);
+        if (paginationEl.classList.contains('hide')) {
+            paginationEl.classList.remove('hide')
+        };
+
+    } else if (artistId && albums.length && !document.querySelector('a.back-link')) {
+        if (!paginationEl.classList.contains('hide')) {
+            paginationEl.classList.add('hide')
+        };
+
+        const backLink = document.querySelector('a.back-link');
+        const artistTitle = document.querySelector('div.title > div');
+        if (!backLink || !artistTitle) {
+            searchContainer.innerHTML = '';
+            titleContainer.innerHTML = '';
+            const backLinkEl = createBackLinkEl();
+            const titleEl = createPageTitleEl(albums[0].artist.title);
+            titleContainer.appendChild(backLinkEl);
+            titleContainer.appendChild(titleEl);
+        }
     }
 
     const content = document.querySelector('div.content');
@@ -56,21 +77,19 @@ export const displayAlbums = async (options?: IOptions) => {
         return;
     }
 
-    const albumSections = albums.map((album) => createAlbumSectionEl(album));
+    const albumSections = albums.map((album) => createAlbumSectionEl(album, Boolean(artistId)));
 
     for (const albumSection of albumSections) {
         content.appendChild(albumSection);
     }
 }
 
-const loadPage = () => {
+const loadPage = async () => {
     const pathName = window.location.pathname;
-    if(artistURLRegex.test(pathName)) {
-        const artistId = pathName.split('/')[2];
-        displayAlbums({artistId}).catch(displayError);
-    } else {
-        displayAlbums().catch(displayError);
-    }
+    const isArtistPage = artistURLRegex.test(pathName);
+    isArtistPage ? window.history.pushState({home: false}, 'Artist page') : window.history.pushState({home: true}, 'Home page', '/');
+    const artistId = isArtistPage ? pathName.split('/')[2] : undefined;
+    await displayAlbums({artistId}).catch(displayError);
 }
 
 const displayError = () => {
@@ -81,10 +100,10 @@ const displayError = () => {
     titleContainer.innerHTML = 'Error';
 }
 
-const setSelectEvent = () => {
+const setSelectEvent = async () => {
     const searchEl: HTMLInputElement = document.querySelector('#search');
     searchEl ? searchEl.value = null : null;
-    loadPage();
+    await showLoaderOnFunctionWait(loadPage);
 }
 
 const limitEl = document.querySelector('#limit');
@@ -93,7 +112,5 @@ const pageEl = document.querySelector('#page');
 limitEl.addEventListener('change', setSelectEvent);
 pageEl.addEventListener('change', setSelectEvent);
 
-
-window.addEventListener('load', loadPage);
-window.addEventListener('popstate', loadPage);
-
+window.addEventListener('load', async () => await showLoaderOnFunctionWait(loadPage));
+window.addEventListener('popstate', async () => await showLoaderOnFunctionWait(loadPage));

@@ -51,3 +51,21 @@ export const constructQueryParamsString = (options: IQueryOptions): string => {
 
     return queryParameters;
 }
+
+export const showLoaderOnFunctionWait = async (fun: () => Promise<void>) => {
+    toggleLoader(true);
+    await fun();
+    toggleLoader(false);
+};
+
+const toggleLoader = (toggle: boolean) => {
+    const loaderEl = document.querySelector('.loading-overlay');
+    if (loaderEl) {
+        const loaderClassList = loaderEl.classList;
+        if (!toggle && !loaderClassList.contains('hide')) {
+            loaderClassList.add('hide');
+        } else if (toggle && loaderClassList.contains('hide')) {
+            loaderClassList.remove('hide');
+        }
+    }
+}
