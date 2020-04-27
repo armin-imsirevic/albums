@@ -37,7 +37,6 @@ export const displayAlbums = async (options?: IOptions) => {
         const titleEl = createPageTitleEl(albums[0].artist.title);
         titleContainer.appendChild(backLink);
         titleContainer.appendChild(titleEl);
-        // titleContainer.textContent = albums[0].artist.title;
         window.history.pushState('', artistId, `/artist/${artistId}`);
     }
 
