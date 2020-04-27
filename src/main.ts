@@ -24,6 +24,7 @@ export const displayPage = async (options?: IDisplayOptions) => {
         titleContainer.innerHTML = 'Album list';
         if (artistURLRegex.test(window.location.pathname)) {
             window.history.replaceState('', 'Album list', `/`);
+            window.location.href = window.location.href
         }
     } else if (artistId && albums.length && !document.querySelector('a.back-link')) {
         searchContainer.innerHTML = '';
@@ -46,10 +47,9 @@ export const displayPage = async (options?: IDisplayOptions) => {
 
 
 export const updateAlbum = async (album: IAlbum): Promise<void> => {
-    const albumData = {...album, favorite: !album.favorite, artist: undefined} as IAlbum;
-    await requestUpdateAlbum(albumData);
-    const newSection = createAlbumSection(albumData);
-    document.querySelector(`section#a${albumData.id}`).replaceWith(newSection);
+    await requestUpdateAlbum({...album, favorite: !album.favorite, artist: undefined});
+    const newSection = createAlbumSection({...album, favorite: !album.favorite} );
+    document.querySelector(`section#a${album.id}`).replaceWith(newSection);
 };
 
 const loadPage = () => {
