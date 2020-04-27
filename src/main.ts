@@ -1,21 +1,17 @@
 import './css/main.css';
 
-import { IAlbum, IDisplayOptions } from './interfaces';
-import { createAlbumSection, createSearchInputEl, createBackLinkEl } from './elements';
-import { requestUpdateAlbum, fetchAlbumInfo, fetchArtistInfo, fetchAlbumsByQuery } from './api';
+import { IOptions } from './interfaces';
+import { createAlbumSectionEl, createSearchInputEl, createBackLinkEl, createNoResultsEl, createInvalidArtistIDEl } from './elements';
+import { fetchAlbumInfo } from './api';
 import { artistURLRegex } from './helpers';
 
-export const displayPage = async (options?: IDisplayOptions) => {
-
+export const displayAlbums = async (options?: IOptions) => {
     const { artistId, query } = options || {};
-    const albums = artistId ?
-        await fetchArtistInfo(artistId)
-        : query ?
-            await fetchAlbumsByQuery(query)
-            : await fetchAlbumInfo();
+    const albums = await fetchAlbumInfo(options);
 
     const searchContainer = document.querySelector('div.search-container');
     const titleContainer = document.querySelector('div.title');
+    const backLink = createBackLinkEl();
 
     if (!artistId && !document.querySelector('input#search')) {
         searchContainer.innerHTML = '';
@@ -23,42 +19,45 @@ export const displayPage = async (options?: IDisplayOptions) => {
         searchContainer.appendChild(searchInputEl);
         titleContainer.innerHTML = 'Album list';
         if (artistURLRegex.test(window.location.pathname)) {
-            window.history.replaceState('', 'Album list', `/`);
-            window.location.href = window.location.href
+            window.history.pushState('', 'Album list', '/');
         }
     } else if (artistId && albums.length && !document.querySelector('a.back-link')) {
         searchContainer.innerHTML = '';
         titleContainer.innerHTML = albums[0].artist.title;
-        const backLink = createBackLinkEl();
         searchContainer.appendChild(backLink);
-        window.history.replaceState('', artistId, `/artist/${artistId}`);
+        window.history.pushState('', artistId, `/artist/${artistId}`);
     }
 
     const content = document.querySelector('div.content');
     content.innerHTML = '';
 
-    const albumSections = albums.map((album) => createAlbumSection(album));
+    if (query && !Boolean(albums.length)) {
+        const noResultsEl = createNoResultsEl(query);
+        content.appendChild(noResultsEl);
+        return;
+    }
+
+    if (artistId && !Boolean(albums.length)) {
+        const invalidIDEl = createInvalidArtistIDEl(artistId);
+        searchContainer.appendChild(backLink);
+        content.appendChild(invalidIDEl);
+        return;
+    }
+
+    const albumSections = albums.map((album) => createAlbumSectionEl(album));
 
     for (const albumSection of albumSections) {
         content.appendChild(albumSection);
     }
 }
 
-
-
-export const updateAlbum = async (album: IAlbum): Promise<void> => {
-    await requestUpdateAlbum({...album, favorite: !album.favorite, artist: undefined});
-    const newSection = createAlbumSection({...album, favorite: !album.favorite} );
-    document.querySelector(`section#a${album.id}`).replaceWith(newSection);
-};
-
 const loadPage = () => {
     const pathName = window.location.pathname;
     if(artistURLRegex.test(pathName)) {
         const artistId = pathName.split('/')[2];
-        displayPage({artistId}).catch((e) => console.log(e));
+        displayAlbums({artistId}).catch((e) => console.log(e));
     } else {
-        displayPage().catch((e) => console.log(e));
+        displayAlbums().catch((e) => console.log(e));
     }
 }
 

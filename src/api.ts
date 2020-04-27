@@ -1,7 +1,24 @@
-import { IAlbum, IArtist } from './interfaces';
-import { unique} from './helpers';
+import { IAlbum, IArtist, IQueryOptions, IOptions } from './interfaces';
+import { unique } from './helpers';
 
-export const requestUpdateAlbum = (album: IAlbum) => fetch(
+const requestAlbums = (options: IQueryOptions): Promise<Response> => {
+    const {
+        limit,
+        query,
+        artistId
+    } = options;
+
+    const limitParameter = limit ? '_limit=' + limit : '';
+    const queryParameter = query ? 'q=' + query : '';
+    const artistIdParameter = artistId ? 'artistId=' + artistId : '';
+    const queryParameters = [limitParameter, queryParameter, artistIdParameter].filter((p) => p != null).join('&');
+
+    return fetch(`/albums${queryParameters ? '/?' + queryParameters : ''}`);
+}
+
+const requestArtists = (queryIDs: string): Promise<Response> => fetch(`/artists/?id=${queryIDs}`);
+
+const requestUpdateAlbum = (album: IAlbum): Promise<Response> => fetch(
     `/albums/${album.id}`,
     {
         headers: { 'Content-Type': 'application/json' },
@@ -10,41 +27,26 @@ export const requestUpdateAlbum = (album: IAlbum) => fetch(
     },
 )
 
-export const fetchAlbumInfo = async (): Promise<IAlbum[]> => {
+export const fetchAlbumInfo = async (options?: IOptions): Promise<IAlbum[]> => {
     const urlParams = new URLSearchParams(window.location.search);
-    const limit = urlParams.has('limit') ? urlParams.get('limit') : 10;
-    const albumsResponse = await fetch(`/albums/?_limit=${limit}`);
+    const limit = urlParams.has('limit') ? urlParams.get('limit') : '10';
+
+    const albumsResponse = await requestAlbums({...options, limit});
     const albumsData: IAlbum[] = await albumsResponse.json();
     const artistsQuery = albumsData.map((a) => a.artistId).filter(unique).join('&id=');
-    const artistsResponse = await fetch(`/artists/?id=${artistsQuery}`);
+    const artistsResponse = await requestArtists(artistsQuery);
     const artistsData: IArtist[] = await artistsResponse.json();
+
     const albumFullData = albumsData.map((album) => {
         const artist = artistsData.find((artist) => artist.id === album.artistId);
         return {...album, artist} as IAlbum;
     });
+
     return albumFullData;
 }
 
-export const fetchArtistInfo = async (artistId: string | number): Promise<IAlbum[]> => {
-    const artistsResponse = await fetch(`/artists/?id=${artistId}`);
-    const artistData: IArtist[] = await artistsResponse.json();
-    const albumsResponse = await fetch(`/albums/?artistId=${artistId}`);
-    const albumsData: IAlbum[] = await albumsResponse.json();
-    const albumFullData = albumsData.map((album) => ({...album, artist: artistData[0]} as IAlbum));
-    return albumFullData;
-}
-
-export const fetchAlbumsByQuery = async (query: string): Promise<IAlbum[]> => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const limit = urlParams.has('limit') ? urlParams.get('limit') : 10;
-    const albumsResponse = await fetch(`/albums/?_limit=${limit}&q=${query}`);
-    const albumsData: IAlbum[] = await albumsResponse.json();
-    const artistsQuery = albumsData.map((a) => a.artistId).filter(unique).join('&id=');
-    const artistsResponse = await fetch(`/artists/?id=${artistsQuery}`);
-    const artistsData: IArtist[] = await artistsResponse.json();
-    const albumsFullData = albumsData.map((album) => {
-        const artist = artistsData.find((artist) => artist.id === album.artistId);
-        return {...album, artist} as IAlbum;
-    });
-    return albumsFullData;
-}
+export const updateAlbum = async (album: IAlbum): Promise<IAlbum> => {
+    const albumResponse = await requestUpdateAlbum({...album, favorite: !album.favorite, artist: undefined});
+    const updatedAlbum: IAlbum = await albumResponse.json();
+    return {...updatedAlbum, artist: album.artist} as IAlbum;
+};

@@ -41,11 +41,7 @@
       "imageUrl": "https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/20/6f/b5/206fb560-6fd5-15f9-0b68-88d309ffc5a6/19UMGIM53909.rgb.jpg/170x170bb.png",
       "releaseDate": "2019-08-23T00:00:00-07:00",
       "artistId": 0,
-      "favorite": false,
-      "artist": {
-        "id": 0,
-        "title": "Taylor Swift"
-      }
+      "favorite": false
     },
     {
       "title": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
@@ -54,11 +50,7 @@
       "releaseDate": "2019-03-29T00:00:00-07:00",
       "artistId": 1,
       "favorite": true,
-      "id": 1,
-      "artist": {
-        "id": 1,
-        "title": "Billie Eilish"
-      }
+      "id": 1
     },
     {
       "id": 2,
@@ -145,11 +137,7 @@
       "imageUrl": "https://is4-ssl.mzstatic.com/image/thumb/Music113/v4/36/43/5b/36435b33-7b0e-a0ff-146f-47b196b399af/19UMGIM99480.rgb.jpg/170x170bb.png",
       "releaseDate": "2020-01-31T00:00:00-07:00",
       "artistId": 8,
-      "favorite": false,
-      "artist": {
-        "id": 8,
-        "title": "Drive-By Truckers"
-      }
+      "favorite": true
     },
     {
       "id": 9,

@@ -14,7 +14,11 @@ export interface IArtist {
     title: string;
 }
 
-export interface IDisplayOptions {
+export interface IOptions {
     artistId?: string;
     query?: string;
+}
+
+export interface IQueryOptions extends IOptions {
+    limit: string;
 }

@@ -1,12 +1,13 @@
 import { IAlbum } from './interfaces';
-import { updateAlbum, displayPage } from './main';
+import { displayAlbums } from './main';
 import { debounce } from 'debounce';
+import { updateAlbum } from './api';
 
 const createAlbumImgEl = (album: IAlbum): HTMLImageElement => {
     const img = document.createElement('img');
     img.setAttribute('src', album.imageUrl);
     img.setAttribute('class', 'album-image');
-    img.addEventListener('click', () => displayPage({artistId: album.artist.id.toString()}));
+    img.addEventListener('click', () => displayAlbums({artistId: album.artist.id.toString()}));
     return img;
 }
 
@@ -21,7 +22,7 @@ const createSectionTitleEl = (album: IAlbum): HTMLDivElement => {
     artistTitle.innerText = album.artist.title;
     titleHolder.appendChild(albumTitle);
     titleHolder.appendChild(artistTitle);
-    titleHolder.addEventListener('click', () => displayPage({artistId: album.artist.id.toString()}));
+    titleHolder.addEventListener('click', () => displayAlbums({artistId: album.artist.id.toString()}));
     return titleHolder;
 }
 
@@ -52,7 +53,7 @@ const createPriceEl = (album: IAlbum): HTMLDivElement => {
 const createFavoriteLinkEl = (album: IAlbum): HTMLAnchorElement => {
     const aLink = document.createElement('a');
     aLink.setAttribute('class', 'album-favorite-link');
-    aLink.addEventListener('click', () => updateAlbum(album));
+    aLink.addEventListener('click', () => updateAlbumSection(album));
     aLink.innerText = 'Remove favorite';
 
     return aLink;
@@ -61,7 +62,7 @@ const createFavoriteLinkEl = (album: IAlbum): HTMLAnchorElement => {
 const createFavoriteButtonEl = (album: IAlbum): HTMLButtonElement => {
     const button = document.createElement('button');
     button.setAttribute('class', 'album-favorite-button');
-    button.addEventListener('click', () => updateAlbum(album));
+    button.addEventListener('click', () => updateAlbumSection(album));
     button.innerText = 'MARK AS FAVORITE';
 
     return button;
@@ -82,7 +83,30 @@ const createFavoriteEl = (album: IAlbum): HTMLDivElement => {
     return favoriteHolder;
 }
 
-export const createAlbumSection = (album: IAlbum) => {
+const updateAlbumSection = async (album: IAlbum): Promise<void> => {
+    const updatedAlbum = await updateAlbum(album);
+    const newSection = createAlbumSectionEl(updatedAlbum);
+    document.querySelector(`section#a${updatedAlbum.id}`).replaceWith(newSection);
+}
+
+export const createNoResultsEl = (query: string): HTMLDivElement => {
+    const noEl = document.createElement('div');
+    noEl.setAttribute('class', 'no-search');
+    noEl.innerText = `No search results for '${query}'!`
+
+    return noEl;
+}
+
+
+export const createInvalidArtistIDEl = (artistId: string): HTMLDivElement => {
+    const el = document.createElement('div');
+    el.setAttribute('class', 'no-search');
+    el.innerText = `Artist with id '${artistId}' doesn't exist!`
+
+    return el;
+}
+
+export const createAlbumSectionEl = (album: IAlbum) => {
     const section = document.createElement('section');
     section.setAttribute('id', 'a'+album.id);
 
@@ -105,7 +129,7 @@ export const createSearchInputEl = (): HTMLInputElement => {
     const searchInput = document.createElement('input');
     searchInput.setAttribute('id', 'search');
     searchInput.setAttribute('placeholder', 'Search');
-    searchInput.addEventListener('input', debounce((e: any) => displayPage({query: e.target.value}), 500));
+    searchInput.addEventListener('input', debounce((e: any) => displayAlbums({query: e.target.value}), 500));
     return searchInput;
 }
 
@@ -113,6 +137,9 @@ export const createBackLinkEl = (): HTMLAnchorElement => {
     const backLink = document.createElement('a');
     backLink.setAttribute('class', 'back-link')
     backLink.innerText = '< Back';
-    backLink.addEventListener('click', () => displayPage());
+    backLink.addEventListener('click', () => {
+        window.history.pushState('', '', '/');
+        displayAlbums();
+    });
     return backLink;
 }
