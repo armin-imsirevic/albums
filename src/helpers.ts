@@ -52,7 +52,7 @@ export const constructQueryParamsString = (options: IQueryOptions): string => {
     return queryParameters;
 }
 
-export const showLoaderOnFunctionWait = async (fun: () => Promise<void>) => {
+export const showLoaderOnFunctionAwait = async (fun: () => Promise<void>) => {
     toggleLoader(true);
     await fun();
     toggleLoader(false);

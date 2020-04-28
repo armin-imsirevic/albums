@@ -11,7 +11,7 @@ import {
 import {
     artistURLRegex,
     getPagination,
-    showLoaderOnFunctionWait
+    showLoaderOnFunctionAwait
 } from './helpers';
 import { fetchAlbumInfo } from './api';
 import { IOptions } from './interfaces';
@@ -61,6 +61,7 @@ export const displayAlbums = async (options?: IOptions) => {
         }
     }
 
+    // Setup album sections
     const content = document.querySelector('div.content');
     content.innerHTML = '';
 
@@ -87,7 +88,7 @@ export const displayAlbums = async (options?: IOptions) => {
 const loadPage = async () => {
     const pathName = window.location.pathname;
     const isArtistPage = artistURLRegex.test(pathName);
-    isArtistPage ? window.history.pushState({home: false}, 'Artist page') : window.history.pushState({home: true}, 'Home page', '/');
+    isArtistPage ? window.history.pushState({home: false}, 'Artist page') : window.history.pushState({home: true}, 'Home page');
     const artistId = isArtistPage ? pathName.split('/')[2] : undefined;
     await displayAlbums({artistId}).catch(displayError);
 }
@@ -101,9 +102,12 @@ const displayError = () => {
 }
 
 const setSelectEvent = async () => {
+    window.history.pushState({home: true}, 'Home page', '/')
     const searchEl: HTMLInputElement = document.querySelector('#search');
-    searchEl ? searchEl.value = null : null;
-    await showLoaderOnFunctionWait(loadPage);
+    if(searchEl) {
+        searchEl.value = null
+    };
+    await showLoaderOnFunctionAwait(loadPage);
 }
 
 const limitEl = document.querySelector('#limit');
@@ -112,5 +116,8 @@ const pageEl = document.querySelector('#page');
 limitEl.addEventListener('change', setSelectEvent);
 pageEl.addEventListener('change', setSelectEvent);
 
-window.addEventListener('load', async () => await showLoaderOnFunctionWait(loadPage));
-window.addEventListener('popstate', async () => await showLoaderOnFunctionWait(loadPage));
+window.addEventListener('load', async () => await showLoaderOnFunctionAwait(loadPage));
+window.addEventListener('popstate', async () => await showLoaderOnFunctionAwait(loadPage));
+
+//remove display:none on body after main.js loads
+document.body.removeAttribute('style');

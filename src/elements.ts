@@ -2,7 +2,7 @@ import { IAlbum } from './interfaces';
 import { displayAlbums } from './main';
 import { debounce } from 'debounce';
 import { updateAlbum } from './api';
-import { setPaginationToDefault, showLoaderOnFunctionWait } from './helpers';
+import { setPaginationToDefault, showLoaderOnFunctionAwait } from './helpers';
 
 const createAlbumImgEl = (album: IAlbum, disableEventListeners: boolean): HTMLImageElement => {
     const img = document.createElement('img');
@@ -10,7 +10,7 @@ const createAlbumImgEl = (album: IAlbum, disableEventListeners: boolean): HTMLIm
     img.setAttribute('class', 'album-image');
 
     if (!disableEventListeners) {
-        img.addEventListener('click', () => showLoaderOnFunctionWait(() => {
+        img.addEventListener('click', () => showLoaderOnFunctionAwait(() => {
             window.history.pushState({home: false}, album.artistId + '', `/artist/${album.artistId}`);
             return displayAlbums({artistId: album.artist.id.toString()});
         }));
@@ -65,7 +65,7 @@ const createPriceEl = (album: IAlbum): HTMLDivElement => {
 const createFavoriteLinkEl = (album: IAlbum, disableEventListeners: boolean): HTMLAnchorElement => {
     const aLink = document.createElement('a');
     aLink.setAttribute('class', 'album-favorite-link');
-    aLink.addEventListener('click', () => showLoaderOnFunctionWait(() => updateAlbumSection(album, disableEventListeners)));
+    aLink.addEventListener('click', () => showLoaderOnFunctionAwait(() => updateAlbumSection(album, disableEventListeners)));
     aLink.innerText = 'Remove favorite';
 
     return aLink;
@@ -74,7 +74,7 @@ const createFavoriteLinkEl = (album: IAlbum, disableEventListeners: boolean): HT
 const createFavoriteButtonEl = (album: IAlbum, disableEventListeners: boolean): HTMLButtonElement => {
     const button = document.createElement('button');
     button.setAttribute('class', 'album-favorite-button');
-    button.addEventListener('click', () => showLoaderOnFunctionWait(() => updateAlbumSection(album, disableEventListeners)));
+    button.addEventListener('click', () => showLoaderOnFunctionAwait(() => updateAlbumSection(album, disableEventListeners)));
     button.innerText = 'MARK AS FAVORITE';
 
     return button;
@@ -166,7 +166,7 @@ export const createBackLinkEl = (): HTMLAnchorElement => {
     backLink.addEventListener('click', () => {
         window.history.pushState({home: true}, '', '/');
         setPaginationToDefault();
-        showLoaderOnFunctionWait(displayAlbums);
+        showLoaderOnFunctionAwait(displayAlbums);
     });
     return backLink;
 }
