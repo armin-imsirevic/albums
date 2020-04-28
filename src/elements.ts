@@ -157,7 +157,7 @@ const searchInputOnChangeFun = (searchInput: HTMLInputElement) => debounce(async
     if (searchInput.classList.contains('search-loading')) {
         searchInput.classList.replace('search-loading', 'search-loaded');
     }
-}, 500);
+}, 250);
 
 export const createBackLinkEl = (): HTMLAnchorElement => {
     const backLink = document.createElement('a');
